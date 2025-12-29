@@ -7,7 +7,8 @@ import cors from 'cors';
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin:[process.env.APP_URL!]
+  origin:[process.env.APP_URL!],
+  credentials:true
 }))
 app.get("/", async (req: Request, res: Response) => {
   res.send("hello prisma blog app server");
