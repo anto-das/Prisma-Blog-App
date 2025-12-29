@@ -11,7 +11,7 @@ CREATE TABLE "posts" (
     "content" TEXT NOT NULL,
     "authorId" TEXT NOT NULL,
     "thumbnail" TEXT,
-    "isFeatured" BOOLEAN NOT NULL,
+    "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "tags" TEXT[],
     "views" INTEGER NOT NULL DEFAULT 0,
     "status" "PostStatus" NOT NULL DEFAULT 'PUBLISHED',
@@ -34,9 +34,6 @@ CREATE TABLE "comments" (
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("comment_id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "posts_post_id_key" ON "posts"("post_id");
 
 -- CreateIndex
 CREATE INDEX "posts_authorId_idx" ON "posts"("authorId");
