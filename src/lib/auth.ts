@@ -45,10 +45,11 @@ export const auth = betterAuth({
     autoSignIn: false,
   },
   emailVerification: {
-    sendOnSignUp:true,
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       try {
-        const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`
+        const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
         const info = await transporter.sendMail({
           from: '"Prisma Blog App" <prismablogapp@gmail.com>',
           to: "antodasahir@gmail.com",
@@ -149,9 +150,17 @@ export const auth = betterAuth({
         console.log("message sent", info.messageId);
       } catch (error: any) {
         console.log(error);
-        throw(error);
-        
+        throw error;
       }
+    },
+  },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      accessType: "offline",
+      prompt: "select_account consent",
     },
   },
 });
