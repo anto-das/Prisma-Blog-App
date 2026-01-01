@@ -20,23 +20,25 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-const getAllPosts = async(req:Request,res:Response) =>{
+const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const result = await postService.getAllPosts();
+    const { search } = req.query;
+    const searchStr = typeof search === 'string' ? search : undefined;
+    const result = await postService.getAllPosts({search:searchStr});
     res.status(200).send({
-      success:true,
-      message:"Retrieved all posts successfully!",
-      data:result
-    })
-  } catch (e:any) {
+      success: true,
+      message: "Retrieved all posts successfully!",
+      data: result,
+    });
+  } catch (e: any) {
     res.status(500).send({
-      success:false,
-      message:e.message
-    })
+      success: false,
+      message: e.message,
+    });
   }
-}
+};
 
 export const postController = {
   createPost,
-  getAllPosts
+  getAllPosts,
 };
