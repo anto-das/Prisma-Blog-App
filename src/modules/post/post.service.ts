@@ -25,8 +25,8 @@ const getAllPosts = async (payload: {
   page: number;
   limit: number;
   skip: number;
-  sortBy: string ;
-  sortOrder: string ;
+  sortBy: string;
+  sortOrder: string;
 }) => {
   const {
     search,
@@ -99,10 +99,33 @@ const getAllPosts = async (payload: {
           }
         : { createdAt: "desc" },
   });
-  return result;
+  const getAllData = await prisma.post.count({
+    where: {
+      AND: andCondition,
+    },
+  });
+  return {
+    data: result,
+    pagination: {
+      total: getAllData,
+      page,
+      limit,
+      totalPage: Math.ceil(getAllData / limit),
+    },
+  };
 };
+
+const getPostById = async(id:string) =>{
+  const result = await prisma.post.findUnique({
+    where:{
+      post_id:id
+    }
+  })
+  return result
+}
 
 export const postService = {
   createPost,
   getAllPosts,
+  getPostById
 };

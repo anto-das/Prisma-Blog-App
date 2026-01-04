@@ -40,13 +40,10 @@ const getAllPosts = async (req: Request, res: Response) => {
     const status = req.query.status as PostStatus | undefined;
 
     const authorId = req.query.authorId as string | undefined;
-    // const page = Number(req.query.page);
-    // const limit = Number(req.query.limit);
-    // const skip = (page - 1) * limit;
-    // const sortBy = req.query.sortBy as string | undefined;
-    // const sortOrderBy = req.query.sortOrder as string | undefined;
 
-    const {page,limit,skip,sortBy,sortOrder} = paginationSorting(req.query);
+    const { page, limit, skip, sortBy, sortOrder } = paginationSorting(
+      req.query
+    );
 
     const result = await postService.getAllPosts({
       search: searchStr,
@@ -58,7 +55,7 @@ const getAllPosts = async (req: Request, res: Response) => {
       limit,
       skip,
       sortBy,
-      sortOrder
+      sortOrder,
     });
     res.status(200).send({
       success: true,
@@ -73,7 +70,21 @@ const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
+const getPostById = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  if(!postId){
+    throw new Error("Post id required...")
+  }
+  const result = await postService.getPostById(postId);
+  res.status(200).send({
+    success:true,
+    message:"Retrieved your request data successfully.!",
+    data:result
+  })
+};
+
 export const postController = {
   createPost,
   getAllPosts,
+  getPostById
 };
