@@ -25,8 +25,8 @@ const getAllPosts = async (payload: {
   page: number;
   limit: number;
   skip: number;
-  sortBy: string | undefined;
-  sortOrderBy: string | undefined;
+  sortBy: string ;
+  sortOrder: string ;
 }) => {
   const {
     search,
@@ -38,7 +38,7 @@ const getAllPosts = async (payload: {
     limit,
     skip,
     sortBy,
-    sortOrderBy,
+    sortOrder,
   } = payload;
 
   const andCondition: PostWhereInput[] = [];
@@ -93,9 +93,9 @@ const getAllPosts = async (payload: {
       AND: andCondition,
     },
     orderBy:
-      sortBy && sortOrderBy
+      sortBy && sortOrder
         ? {
-            [sortBy]: sortOrderBy,
+            [sortBy]: sortOrder,
           }
         : { createdAt: "desc" },
   });
