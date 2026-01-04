@@ -5,7 +5,7 @@ async function seedingAdmin() {
   try {
     console.log("**** admin seeding started*****");
     const adminData = {
-        // admit data gula env file eh rakha best practises
+        // admit data gula env file eh rakha best practise
       name: "Ahir Anto",
       email: "antodas2@gmail.com",
       role: UserRole.ADMIN,
