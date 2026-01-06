@@ -19,7 +19,6 @@ function paginationSorting(options: IOptions): IOptionsResult {
   const skip = Number(page - 1) * limit;
   const sortBy = options.sortBy || "createdAt";
   const sortOrder = options.sortOrder || "desc";
-  console.log({ page, limit, skip, sortBy, sortOrder });
   return {
       page,
       limit,

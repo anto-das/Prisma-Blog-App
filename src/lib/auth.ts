@@ -147,9 +147,9 @@ export const auth = betterAuth({
 </html>
 `,
         });
-        console.log("message sent", info.messageId);
+        // console.log("message sent", info.messageId);
       } catch (error: any) {
-        console.log(error);
+        // console.log(error);
         throw error;
       }
     },

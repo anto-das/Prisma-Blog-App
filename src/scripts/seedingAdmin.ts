@@ -3,7 +3,7 @@ import { UserRole } from "../Types/role.check";
 
 async function seedingAdmin() {
   try {
-    console.log("**** admin seeding started*****");
+    // console.log("**** admin seeding started*****");
     const adminData = {
         // admit data gula env file eh rakha best practise
       name: "Ahir Anto",
@@ -33,7 +33,7 @@ async function seedingAdmin() {
         body: JSON.stringify(adminData),
       }
     );
-    console.log("***** admin created successfully");
+    // console.log("***** admin created successfully");
     if (signUpAdmin.ok) {
       await prisma.user.update({
         where: {
@@ -44,7 +44,7 @@ async function seedingAdmin() {
         },
       });
     }
-    console.log("****** email verification updated");
+    // console.log("****** email verification updated");
   } catch (error) {
     console.log(error);
   }
