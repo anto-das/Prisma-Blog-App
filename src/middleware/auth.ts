@@ -38,7 +38,7 @@ const auth = (...roles: UserRole[]) => {
       }
       next();
     } catch (err) {
-      next(err);
+     return next(err);
     }
   };
 };

@@ -1,5 +1,9 @@
 import { boolean, string } from "better-auth/*";
-import { Post, PostStatus } from "../../../generated/prisma/client";
+import {
+  CommentStatus,
+  Post,
+  PostStatus,
+} from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { PostWhereInput } from "../../../generated/prisma/models";
 
@@ -130,6 +134,24 @@ const getPostById = async (id: string) => {
     const postData = await tx.post.findUnique({
       where: {
         post_id: id,
+      },
+      include: {
+        comments: {
+          where: {
+            parentId: null,
+            status: CommentStatus.APPROVED,
+          },
+          include: {
+            replies: {
+              where: {
+                status: CommentStatus.APPROVED,
+              },
+              include: {
+                replies: true,
+              },
+            },
+          },
+        },
       },
     });
     return postData;

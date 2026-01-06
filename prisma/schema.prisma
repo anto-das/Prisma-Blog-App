@@ -34,12 +34,12 @@ model Post {
 
 model Comment {
   comment_id String        @id @unique @default(uuid())
-  title      String        @db.VarChar(220)
+  content    String        @db.Text
   authorId   String
-  status     CommentStatus @default(APPROVED)
   postId     String
-  posts      Post          @relation(fields: [postId], references: [post_id])
   parentId   String?
+  status     CommentStatus @default(APPROVED)
+  posts      Post          @relation(fields: [postId], references: [post_id])
   parent     Comment?      @relation("parentReply", fields: [parentId], references: [comment_id])
   replies    Comment[]     @relation("parentReply")
   createdAt  DateTime      @default(now())
@@ -73,7 +73,7 @@ model User {
   accounts      Account[]
 
   role   String? @default("USER")
-  phone  String? 
+  phone  String?
   status String? @default("ACTIVE")
 
   @@unique([email])
