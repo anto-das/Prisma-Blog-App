@@ -77,10 +77,23 @@ const updateComment = async (req: Request, res: Response) => {
   });
 };
 
+const moderateComment = async (req: Request, res: Response) => {
+  const { commentId } = req.params;
+  const status = req.body;
+  const result = await commentService.moderateComment(
+    commentId as string,
+    status
+  );
+  res.status(200).send({
+    result,
+  });
+};
+
 export const commentController = {
   createComment,
   getCommentById,
   getCommentsByAuthorId,
   deleteCommentById,
   updateComment,
+  moderateComment,
 };
