@@ -125,7 +125,7 @@ const updatePost = async (req: Request, res: Response) => {
     }
     const { postId } = req.params;
     const data = req.body;
-    const isAdmin = user?.role === UserRole.ADMIN
+    const isAdmin = user?.role === UserRole.ADMIN;
     const result = await postService.updatePost(
       postId as string,
       user?.id as string,
@@ -145,32 +145,53 @@ const updatePost = async (req: Request, res: Response) => {
   }
 };
 
-const deletePost = async(req:Request,res:Response) =>{
- try {
-   const user = req.user;
+const deletePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
     if (!user) {
       res.status(403).send({
         success: false,
         message: "unauthorized access!",
       });
     }
-    console.log(user)
+    console.log(user);
     const { postId } = req.params;
-    const isAdmin = user?.role === UserRole.ADMIN
-    const result = await postService.deletePost(postId as string,user?.id as string,isAdmin);
+    const isAdmin = user?.role === UserRole.ADMIN;
+    const result = await postService.deletePost(
+      postId as string,
+      user?.id as string,
+      isAdmin
+    );
     res.status(200).send({
-      success:true,
-      message:"post delete successfully!",
-      data:result
-    })
- } catch (e:any) {
-  const errorMessage = (e instanceof Error) ? e.message :"delete failed"
-  res.status(500).send({
-    success:false,
-    message:errorMessage
-  })
- }
-}
+      success: true,
+      message: "post delete successfully!",
+      data: result,
+    });
+  } catch (e: any) {
+    const errorMessage = e instanceof Error ? e.message : "delete failed";
+    res.status(500).send({
+      success: false,
+      message: errorMessage,
+    });
+  }
+};
+
+const getStats = async (req: Request, res: Response) => {
+  try {
+    const result = await postService.getStats();
+    res.status(200).send({
+      success: true,
+      data: result,
+    });
+  } catch (e: any) {
+    const errorMessage =
+      e instanceof Error ? e.message : "stats fetched failed";
+    res.status(500).send({
+      success: false,
+      message: errorMessage,
+    });
+  }
+};
 
 export const postController = {
   createPost,
@@ -178,5 +199,6 @@ export const postController = {
   getPostById,
   getMyPosts,
   updatePost,
-  deletePost
+  deletePost,
+  getStats,
 };

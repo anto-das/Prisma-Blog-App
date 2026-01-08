@@ -23,6 +23,8 @@ router.get(
   postController.getMyPosts
 );
 
+router.get("/dashboard/stats", auth(UserRole.ADMIN), postController.getStats);
+
 router.patch(
   "/:postId",
   auth(UserRole.ADMIN, UserRole.USER),
