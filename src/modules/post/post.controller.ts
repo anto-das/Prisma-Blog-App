@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { postService } from "./post.service";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSorting from "../../helper/paginationSorting";
+import { UserRole } from "../../Types/role.check";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -93,11 +94,11 @@ const getPostById = async (req: Request, res: Response) => {
 const getMyPosts = async (req: Request, res: Response) => {
   try {
     const user = req.user;
-    if(!user){
+    if (!user) {
       res.status(403).send({
-        success:false,
-        message:"Your are not sign in at the time",
-      })
+        success: false,
+        message: "Your are not sign in at the time",
+      });
     }
     const result = await postService.getMyPosts(user?.id as string);
     res.status(200).send({
@@ -108,14 +109,74 @@ const getMyPosts = async (req: Request, res: Response) => {
   } catch (e: any) {
     res.status(500).send({
       success: false,
-      message: e.message,
+      message: e,
     });
   }
 };
+
+const updatePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(403).send({
+        success: false,
+        message: "unauthorized access!",
+      });
+    }
+    const { postId } = req.params;
+    const data = req.body;
+    const isAdmin = user?.role === UserRole.ADMIN
+    const result = await postService.updatePost(
+      postId as string,
+      user?.id as string,
+      data,
+      isAdmin
+    );
+    res.status(200).send({
+      success: true,
+      message: "post updated successfully!",
+      data: result,
+    });
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      message: e,
+    });
+  }
+};
+
+const deletePost = async(req:Request,res:Response) =>{
+ try {
+   const user = req.user;
+    if (!user) {
+      res.status(403).send({
+        success: false,
+        message: "unauthorized access!",
+      });
+    }
+    console.log(user)
+    const { postId } = req.params;
+    const isAdmin = user?.role === UserRole.ADMIN
+    const result = await postService.deletePost(postId as string,user?.id as string,isAdmin);
+    res.status(200).send({
+      success:true,
+      message:"post delete successfully!",
+      data:result
+    })
+ } catch (e:any) {
+  const errorMessage = (e instanceof Error) ? e.message :"delete failed"
+  res.status(500).send({
+    success:false,
+    message:errorMessage
+  })
+ }
+}
 
 export const postController = {
   createPost,
   getAllPosts,
   getPostById,
   getMyPosts,
+  updatePost,
+  deletePost
 };
