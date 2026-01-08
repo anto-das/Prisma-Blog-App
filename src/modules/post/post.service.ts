@@ -125,7 +125,7 @@ const getAllPosts = async (payload: {
 };
 
 const getPostById = async (id: string) => {
-  return await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     await tx.post.update({
       where: {
         post_id: id,
@@ -168,10 +168,38 @@ const getPostById = async (id: string) => {
     });
     return postData;
   });
+
+  return result;
+};
+
+const getMyPosts = async (authorId: string) => {
+  // console.log(authorId)
+
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: authorId,
+      status: "ACTIVE",
+    },
+  });
+
+  const result = await prisma.post.findMany({
+    where: {
+      authorId,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+    },
+  });
+  return result;
 };
 
 export const postService = {
   createPost,
   getAllPosts,
   getPostById,
+  getMyPosts,
 };

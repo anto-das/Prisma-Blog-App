@@ -71,20 +71,51 @@ const getAllPosts = async (req: Request, res: Response) => {
 };
 
 const getPostById = async (req: Request, res: Response) => {
-  const { postId } = req.params;
-  if(!postId){
-    throw new Error("Post id required...")
+  try {
+    const { postId } = req.params;
+    if (!postId) {
+      throw new Error("Post id required...");
+    }
+    const result = await postService.getPostById(postId as string);
+    res.status(200).send({
+      success: true,
+      message: "Retrieved your request data successfully.!",
+      data: result,
+    });
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      message: e.message,
+    });
   }
-  const result = await postService.getPostById(postId);
-  res.status(200).send({
-    success:true,
-    message:"Retrieved your request data successfully.!",
-    data:result
-  })
+};
+
+const getMyPosts = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if(!user){
+      res.status(403).send({
+        success:false,
+        message:"Your are not sign in at the time",
+      })
+    }
+    const result = await postService.getMyPosts(user?.id as string);
+    res.status(200).send({
+      success: false,
+      message: "Retrieved all user posts successfully!",
+      data: result,
+    });
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      message: e.message,
+    });
+  }
 };
 
 export const postController = {
   createPost,
   getAllPosts,
-  getPostById
+  getPostById,
+  getMyPosts,
 };
