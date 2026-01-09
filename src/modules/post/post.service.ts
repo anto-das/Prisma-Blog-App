@@ -6,6 +6,7 @@ import {
 } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { PostWhereInput } from "../../../generated/prisma/models";
+import { UserRole } from "../../Types/role.check";
 
 const createPost = async (
   data: Omit<Post, "post_id" | "createdAt" | "updatedAt" | "authorId">,
@@ -270,6 +271,11 @@ const getStats = async () => {
       approvedComment,
       archivedPost,
       draftPost,
+      rejectedPost,
+      users,
+      totalAdmin,
+      totalUser,
+      totalViews,
     ] = await Promise.all([
       await tx.post.count(),
       await tx.post.count({ where: { status: "PUBLISHED" } }),
@@ -277,6 +283,19 @@ const getStats = async () => {
       await tx.post.count({ where: { status: "DRAFT" } }),
       await tx.comment.count(),
       await tx.comment.count({ where: { status: "APPROVED" } }),
+      await tx.comment.count({ where: { status: "REJECTED" } }),
+      await tx.user.count(),
+      await tx.user.count({
+        where: {
+          role: UserRole.ADMIN,
+        },
+      }),
+      await tx.user.count({ where: { role: UserRole.USER } }),
+      await tx.post.aggregate({
+        _sum: {
+          views: true,
+        },
+      }),
     ]);
     return {
       totalPosts,
@@ -285,6 +304,11 @@ const getStats = async () => {
       approvedComment,
       archivedPost,
       draftPost,
+      rejectedPost,
+      users,
+      totalUser,
+      totalAdmin,
+      totalViews:totalViews._sum.views,
     };
   });
 };
