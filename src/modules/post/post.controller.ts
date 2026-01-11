@@ -111,7 +111,7 @@ const getMyPosts = async (req: Request, res: Response) => {
   }
 };
 
-const updatePost = async (req: Request, res: Response) => {
+const updatePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user;
     if (!user) {
@@ -135,14 +135,11 @@ const updatePost = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (e: any) {
-    res.status(500).send({
-      success: false,
-      message: e,
-    });
+    next(e);
   }
 };
 
-const deletePost = async (req: Request, res: Response) => {
+const deletePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user;
     if (!user) {
@@ -165,11 +162,7 @@ const deletePost = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (e: any) {
-    const errorMessage = e instanceof Error ? e.message : "delete failed";
-    res.status(500).send({
-      success: false,
-      message: errorMessage,
-    });
+    next(e);
   }
 };
 
